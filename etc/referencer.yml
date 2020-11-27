@@ -9,4 +9,4 @@ markdown_flags:
     hidden_flag: False
     html_cmd: False
 regex_strings:
-html_cmds: 
+rc_filename: .notebookrc

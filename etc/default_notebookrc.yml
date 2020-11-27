@@ -1,5 +1,6 @@
 default_dir: /home/acobb/notes/
 rc_file: /home/acobb/notebookrc
+color_module: 256
 notes:
     default_files:
         - .md
@@ -24,3 +25,9 @@ colors:
         - \u001b[38;5;239m
     NOTE:
         - \u001b[38;5;246m
+html_cmds:
+    red: red
+    blue: blue
+    green: green
+    back white: back_white
+    clc: clc

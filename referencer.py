@@ -5,30 +5,42 @@ import json
 import yaml
 from etc import string_colors
 
-SC = string_colors.Bit256()
 
+# Configs
+"""
+There are three configs of note
+- etc/referencer.yml file is for notes and tmux windows
+- etc/default_notebookrc.yml for default rc file details
+- $HOME/.notebookrc for user updated rc file values
+"""
 master_config_path = 'etc/referencer.yml'
 master_rc_path = 'etc/default_notebookrc.yml'
 config = {}
 rc_file = {}
 
+# Main config
 with open(master_config_path) as ycf:
     master_config = yaml.load(ycf, Loader=yaml.FullLoader)
 config.update(master_config)
+# Default RC
 with open(master_rc_path) as ycf:
     master_rc = yaml.load(ycf, Loader=yaml.FullLoader)
-rc_file.update(master_rc['notes'])
-rc_file.update(master_rc['colors'])
-
+# User RC
 try:
     with open(master_rc['rc_file']) as ycf:
         rc_file = yaml.load(ycf, Loader=yaml.FullLoader)
 except FileNotFoundError:
     pass
+rc_file.update(master_rc['notes'])
+rc_file.update(master_rc['colors'])
+# rc_file.update(master_rc['html_cmds'])
 
 print(json.dumps(config, indent=4))
 print(json.dumps(rc_file, indent=4))
 
+# Colors
+exec('SC = string_colors.Bit' + str(master_rc['color_module']) + '()')
+print(SC.clc) # To clear any syntax added before this script runs.
 
 # Set colors here:
 for element, colors in master_rc['colors'].items():
@@ -43,6 +55,8 @@ for element, colors in master_rc['colors'].items():
         try:
             exec(element + " += SC." + color)
         except SyntaxError:
+            exec(element + " += '" + color + "'")
+        except AttributeError:
             exec(element + " += '" + color + "'")
     # print(exec(element))
 
@@ -63,7 +77,7 @@ parser.add_argument('-C','-c', '--color',     action='store_false', help='Turn o
 parser.add_argument('-S','-s', '--sensitive', action='store_true',  help='Search sensative to case')
 parser.add_argument('-R','-r', '--recursive', action='store_false', help='Recursive search down directories')
 parser.add_argument('--nonmarkdown',          action='store_true',  help='Look is more than just markdown files')
-parser.add_argument('--config',               action='store_false', help='Set up config if it does not exist <-- not working yet')
+parser.add_argument('--config',               action='store_true',  help='For info, run --config help')
 parser.add_argument('search', nargs='*')
 
 # Setting markdown flag
@@ -72,10 +86,7 @@ md = False
 # Parsing arguments
 args = parser.parse_args()
 
-# # Load config
-# with open('/home/acobb/notes/referencer.json') as cf:
-#   config = json.load(cf)
-# print(json.dumps(config, indent=2))
+# These values dont seem to save properly in yaml, i will look into it eventually but for now they are just added here
 config['regex_strings'] = {}
 config['regex_strings']['header_s'] = "^ *?##* .*"
 config['regex_strings']['break_s'] = "^ *(----*|\*\*\*\**|____*) *$"
@@ -85,7 +96,6 @@ config['regex_strings']['hidden_start_s'] = "^ {0,3}\[//\]: # \(.*"
 config['regex_strings']['hidden_end_s'] = "\)"
 config['regex_strings']['html_cmd_start_s'] = "<!--"
 config['regex_strings']['html_cmd_end_s'] = "-->"
-# default_dir = config['default_dir']
 
 if args.directory == None and args.extended == None:
     directory = [master_rc['default_dir']]
@@ -94,6 +104,52 @@ else:
         directory = args.extended + [rc_file['default_dir']]
     else:
         directory = args.directory
+
+
+# Config
+if args.config:
+    print('runnign config')
+    home = os.getenv('HOME')
+    rf_file_path = home + '/' + config['rc_filename']
+    if not os.path.exists(rf_file_path):
+        print(f'Creating rc file {rf_file_path}')
+        os.mknod(rf_file_path)
+    if 'help' in args.search:
+        print('running config help')
+        # default_dir: /home/acobb/notes/
+        # color_module: 256
+        # notes:
+        #     default_files:
+        #         - .md
+        #     ignore_files:
+        #         - README.md
+        # colors:
+        #     FILE:
+        #         - magenta
+        #     HEADER:
+        #         - blue
+        #     GREP:
+        #         - bright_red
+        #     BLOCK:
+        #         - \u001b[48;5;243;1m
+        #         - \u001b[38;5;232m
+        #     TABLE1:
+        #         - \u001b[48;5;251;1m
+        #         - \u001b[38;5;236m
+        #     TABLE2:
+        #         - \u001b[48;5;248;1m
+        #         - \u001b[38;5;239m
+        #     NOTE:
+        #         - \u001b[38;5;246m
+        # html_cmds:
+        #     red: red
+        #     blue: blue
+        #     green: green
+        #     back white: back_white
+        #     clc: clc
+    exit()
+
+
 
 
 
@@ -385,14 +441,8 @@ def markdown_table(cont):
 
 def markdown_cmd(cmds):
     new_text = []
-    valid_html_cmds = {
-        'red':SC.red,
-        'blue':SC.blue,
-        'green':SC.green,
-        'back white':SC.back_white,
-        'clc':SC.clc,
-    }
-    
+    valid_html_cmds = master_rc['html_cmds']
+   
     for cmd in cmds.split(','):
         while cmd.startswith(' '):
             cmd = cmd[1:]
@@ -401,7 +451,12 @@ def markdown_cmd(cmds):
         if any([True for valid in valid_html_cmds.keys() if cmd.upper() == valid.upper()]):
             for i,j in valid_html_cmds.items():
                 if cmd.upper() == i.upper():
-                    new_text.append(j)
+                    try:
+                        new_text.append(
+                            SC.__dict__[master_rc['html_cmds'][j]]
+                        )
+                    except KeyError:
+                        pass
         else:
             new_text.append('')
     return ''.join(new_text)
@@ -608,58 +663,6 @@ def markdown(cont):
 
 
 
-### Config
-##config_file = os.environ['HOME'] + '/.guiderc'
-##
-##if os.path.exists(config_file):
-##
-##  print('importing config')
-##
-##  with open(os.environ['HOME'] + '/.guiderc_test', 'r') as cf:
-##    config = json.load(cf)
-##
-##  print(json.dumps(config, indent = 1))
-##
-##  # If there is a config, it resets the default color values
-##  # Color shorthand
-##  BLACK   = config['BLACK']
-##  RED     = config['RED']
-##  GREEN   = config['GREEN']
-##  YELLOW  = config['YELLOW']
-##  BLUE    = config['BLUE']
-##  MAGENTA = config['MAGENTA']
-##  CYAN    = config['CYAN']
-##  WHITE   = config['WHITE']
-##  
-##  # Set colors here:
-##  FILE   = config['FILE']
-##  HEADER = config['HEADER']
-##  GREP   = config['GREP']
-##
-##if args.config:
-##  print(f'Resetting config file')
-##
-##  # Default config setup
-##  config_write = {
-##    'BLACK':K16B,
-##    'RED':R16B,
-##    'GREEN':G16B,
-##    'YELLOW':Y16B,
-##    'BLUE':B16,
-##    'MAGENTA':M16,
-##    'CYAN':C16B,
-##    'WHITE':W16,
-##    'FILE':MAGENTA,
-##    'HEADER':BLUE,
-##    'GREP':RED,
-##    }
-##
-##  # Writing the config
-##  with open(config_file, 'w') as cf:
-##    json.dump(config_write ,cf , indent = 2)
-
-
-
 ## RUNNING FILE FUNCTION
 readout = []
 guide_files = pull_files(directory)
@@ -668,7 +671,11 @@ guide_files = pull_files(directory)
 
 ## INTERPRETING ARGS
 # If no search pervided
-if args.search == [] and args.AND == None and args.OR == None and args.list == None:
+if args.search == [] and \
+    args.AND == None and \
+    args.OR == None and \
+    args.list == None and \
+    args.config == None:
 
     for fl in guide_files:
         print(f"{fl[0]}/{fl[1]}")
