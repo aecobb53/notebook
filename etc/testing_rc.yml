@@ -1,0 +1,8 @@
+default_dir: UNKNOWN
+notes:
+    default_files:
+        - .md
+    ignore_files:
+        - README.md
+tasks:
+

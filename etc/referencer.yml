@@ -1,0 +1,12 @@
+string_break: 'TOOLBOX_PAGE_STRING_BREAK'
+file_break: '########################################'
+page_break: ----------------------------------------
+markdown_flags:
+    is_block: False
+    table_header: True
+    table_toggle: False
+    table_flag: False
+    hidden_flag: False
+    html_cmd: False
+regex_strings:
+html_cmds: 

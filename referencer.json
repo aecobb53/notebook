@@ -1,0 +1,26 @@
+{
+    "default_dir":"/home/acobb/notes/",
+    "ignore_files":[
+        "README.md"
+    ],
+    "string_break":"'TOOLBOX_PAGE_STRING_BREAK'",
+    "file_break":"########################################",
+    "page_break":"----------------------------------------",
+    "default_filetype":[
+        ".md"
+    ],
+    "markdown_flags":{
+        "is_block": false,
+        "table_header": true,
+        "table_toggle": false,
+        "table_flag": false,
+        "hidden_flag": false,
+        "html_cmd": false
+    },
+    "regex_strings":{
+
+    },
+    "html_cmds":{
+
+    }
+}

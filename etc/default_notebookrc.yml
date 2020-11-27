@@ -1,0 +1,26 @@
+default_dir: /home/acobb/notes/
+rc_file: /home/acobb/notebookrc
+notes:
+    default_files:
+        - .md
+    ignore_files:
+        - README.md
+tasks:
+colors:
+    FILE:
+        - magenta
+    HEADER:
+        - blue
+    GREP:
+        - bright_red
+    BLOCK:
+        - \u001b[48;5;243;1m
+        - \u001b[38;5;232m
+    TABLE1:
+        - \u001b[48;5;251;1m
+        - \u001b[38;5;236m
+    TABLE2:
+        - \u001b[48;5;248;1m
+        - \u001b[38;5;239m
+    NOTE:
+        - \u001b[38;5;246m
