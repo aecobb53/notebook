@@ -25,18 +25,33 @@ config.update(master_config)
 # Default RC
 with open(master_rc_path) as ycf:
     master_rc = yaml.load(ycf, Loader=yaml.FullLoader)
+
+# def update_rc(first_config, second_config):
+
+
 # User RC
-try:
-    with open(master_rc['rc_file']) as ycf:
-        rc_file = yaml.load(ycf, Loader=yaml.FullLoader)
-except FileNotFoundError:
-    pass
 rc_file.update(master_rc['notes'])
 rc_file.update(master_rc['colors'])
+print(json.dumps(rc_file, indent=4))
+with open(master_rc['rc_file']) as ycf:
+    ymlfile = yaml.load(ycf, Loader=yaml.FullLoader)
+print(ymlfile)
+print(type(ymlfile))
+rc_file.update(ymlfile)
+print(json.dumps(rc_file, indent=4))
+# try:
+#     with open(master_rc['rc_file']) as ycf:
+#         rc_file.update(yaml.load(ycf, Loader=yaml.FullLoader))
+#     # raise ValueError('DONT RUN THIS WHILE DEVELOPING BUT EVENTUALLY DO')
+# except as err:
+#     print('it didnt work')
+#     print(err)
+#     pass
+
 # rc_file.update(master_rc['html_cmds'])
 
-print(json.dumps(config, indent=4))
-print(json.dumps(rc_file, indent=4))
+# print(json.dumps(config, indent=4))
+# print(json.dumps(rc_file, indent=4))
 
 # Colors
 exec('SC = string_colors.Bit' + str(master_rc['color_module']) + '()')
@@ -45,8 +60,8 @@ print(SC.clc) # To clear any syntax added before this script runs.
 # Set colors here:
 for element, colors in master_rc['colors'].items():
     """
-    For each color in the rc files this function tries to assign the color name to a SC argument. 
-    If it cant it tires to append the exact string. 
+    For each color in the rc files this function tries to assign the color name to a SC argument.
+    If it cant it tires to append the exact string.
     By default this assigns:
     FILE HEADER GREP BLOCK TABLE1 TABLE2 NOTE
     """
@@ -108,45 +123,260 @@ else:
 
 # Config
 if args.config:
-    print('runnign config')
+    print('running config\n\n')
     home = os.getenv('HOME')
     rf_file_path = home + '/' + config['rc_filename']
+    new_config = {}
+    new_config_file = []
+    accepted_config_keys = [
+        'default_dir',
+        'color_module',
+        'default_files',
+        'ignore_files',
+        'other_dir',
+        'html_cmds',
+        'colors',
+    ]
     if not os.path.exists(rf_file_path):
         print(f'Creating rc file {rf_file_path}')
         os.mknod(rf_file_path)
     if 'help' in args.search:
-        print('running config help')
-        # default_dir: /home/acobb/notes/
-        # color_module: 256
-        # notes:
-        #     default_files:
-        #         - .md
-        #     ignore_files:
-        #         - README.md
-        # colors:
-        #     FILE:
-        #         - magenta
-        #     HEADER:
-        #         - blue
-        #     GREP:
-        #         - bright_red
-        #     BLOCK:
-        #         - \u001b[48;5;243;1m
-        #         - \u001b[38;5;232m
-        #     TABLE1:
-        #         - \u001b[48;5;251;1m
-        #         - \u001b[38;5;236m
-        #     TABLE2:
-        #         - \u001b[48;5;248;1m
-        #         - \u001b[38;5;239m
-        #     NOTE:
-        #         - \u001b[38;5;246m
-        # html_cmds:
-        #     red: red
-        #     blue: blue
-        #     green: green
-        #     back white: back_white
-        #     clc: clc
+        one = '\t'
+        two = '\t\t'
+        print('running config help:\n\n')
+        # key/value pairs
+        print('The key/value pairs:')
+        print(one + 'Key value pair defaults are overwritten by whatever you add.')
+
+        print(one + 'default_dir:')
+        print(two + 'Default directory points to wherever your current install of notebook is')
+        print(two + 'Example: notes --config default_dir /home/USERNAME/git/notebook')
+
+        print(one + 'color_module:')
+        print(two + 'Sets the color bit type (256 is default but you can also select 16, or 8)')
+        print(two + 'Example: notes --config color_module 16')
+        print('\n')
+
+        # note specific lists
+        print('The note specific lists')
+        print(one + 'Lists can be appended or items removed. The removal explanation is after this.')
+
+        print(one + 'default_files')
+        print(two + 'Adds to the list of files that the parser looks through. All other file types are ignored by the parser. The default type is .md')
+        print(two + 'Example: notes --config default_files .txt')
+
+        print(one + 'ignore_files')
+        print(two + 'Adds to the list of files that are ignored. By default the only one is README.md')
+        print(two + 'Example: notes --config ignore_files README_ignore.md')
+
+        print(one + 'other_dir:')
+        print(two + 'other directory adds to the list of default directories used. Remember notes searches recursivly by default.')
+        print(two + 'Example: notes --config default_dir /home/USERNAME/git/notebook')
+        print('')
+
+        # Removing items
+        print('Any config value can be removed by adding "not" before the key. If it is a default config value it will appear in your rc config to overrite the values')
+        print(one + 'Example notes --config not ignore_files README_ignore.md')
+
+        # Setting colors
+        print('Adding colors to notes')
+        print(one + 'Colors can be selected from all available colors in the color_module. You set what they are called and what they do so two arguments are needed.')
+
+        print(one + 'html_cmds:')
+        print(two + 'If you want colors in the text of markdown files you can add colors to html comments. An example would be <!-- red --> something in red <!-- clc -->. The red sets the color and the clc clears it. Because each command needs a name and what it does there are two arguments for the colors. This is a list so multiple colors or formats can be added to the same command. The list of available colors is quite extensive so run notes --config colors pallet for a list.')
+        print(two + 'Example: notes --config html_cmds red red')
+        print(two + 'Example: notes --config html_cmds warning bright_red background_white blinking')
+
+        print(one + 'colors:')
+        print(two + 'Colors differ from html_cmds because they are used in the code itself. Filenames have different colors from the headers so you can change those with colors. ')
+        print(two + 'Example: notes --config colors FILE bright_red')
+        print(two + 'Example: notes --config colors table red back_green italic')
+        exit()
+
+    if args.search == ['colors', 'pallet']:
+        print('Currently available colors. The left column is how it looks and the right is how to call it. All calls are SC.<color>\n\n')
+        SC.print_pallet()
+
+    if not isinstance(args.search, list) or len(args.search) < 2:
+        print('Not enough arguments to update the config')
+        exit()
+
+
+    # print(args.search)
+    # print(type(args.search))
+
+    try:
+        with open(master_rc['rc_file']) as ycf:
+            new_config.update(yaml.load(ycf, Loader=yaml.FullLoader))
+    except:
+        pass
+
+    # deletename = 'colors'
+    # if deletename in new_config.keys():
+    #     del new_config[deletename]
+
+    # print(json.dumps(new_config,indent=4))
+
+
+    def key_value(key, value, validate=None):
+        print(key + ': ' + value)
+        
+        if key not in accepted_config_keys:
+            print('not a key')
+            return False
+        
+        if validate != None:
+            if value not in validate:
+                print('not a valid value')
+                return False
+        
+        try:
+            value = int(value)
+        except:
+            pass
+        
+        new_config[key] = value
+
+    def list_items(key, value, validate=None):
+        print(key + ': ' + value)
+
+        if key not in accepted_config_keys:
+            print('not a key')
+            return False
+        
+        if key not in new_config.keys():
+            new_config[key] = []
+        
+        if validate != None:
+            if value not in validate:
+                print('not a valid value')
+                return False
+
+        if value in new_config[key]:
+            return False
+    
+        try:
+            value = int(value)
+        except:
+            pass
+    
+        new_config[key].append(value)
+
+    def update_colors(category, key, values, validate=None):
+        if not isinstance(values, list):
+            values = [values]
+        print(category + ':  ' + key + ': ' + str(values))
+
+        if category not in accepted_config_keys:
+            print('not a key')
+            return False
+        
+        if category not in new_config.keys():
+            new_config[category] = {}
+
+        if key not in new_config[category].keys():
+            new_config[category][key] = []
+        
+        for value in values:
+            skip = False
+            if validate != None:
+                if value not in validate:
+                    print('not a valid value')
+                    skip = True
+
+            if value in new_config[category][key]:
+                skip = True
+
+            if skip:
+                return False
+        
+            try:
+                value = int(value)
+            except:
+                pass
+        
+            new_config[category][key].append(value)
+
+
+    if args.search[0] == 'default_dir':
+        key_value(args.search[0], args.search[1])
+
+    if args.search[0] == 'color_module':
+        key_value(args.search[0], args.search[1], ['256', '16', '8'])
+
+
+    if args.search[0] == 'default_files':
+        list_items(args.search[0], args.search[1])
+
+    if args.search[0] == 'ignore_files':
+        list_items(args.search[0], args.search[1])
+
+    if args.search[0] == 'other_dir':
+        list_items(args.search[0], args.search[1])
+
+
+    if args.search[0] == 'html_cmds':
+        update_colors('html_cmds', args.search[1], args.search[2:])
+
+    if args.search[0] == 'colors':
+        update_colors('colors', args.search[1], args.search[2:])
+
+    # Dont use yaml write so you can add notes colors and other headers to the lists
+
+    ### it seems to be deleting the list items for unknown reasons
+
+    indent = "    "
+
+    # print(json.dumps(new_config,indent=4))
+
+    new_config = {}
+    new_config['default_dir'] = '/home'
+    new_config['color_module'] = 256
+    new_config['default_files'] = ['.md', '.txt']
+    new_config['ignore_files'] = ['.txt']
+    new_config['other_dir'] = ['/home/acobb/git', '/home']
+    # new_config['other_dir'] = ['/home/acobb/git']
+    new_config['html_cmds'] = {'blue': ['blue']}
+    new_config['colors'] = {'FILE': ['red', 'back_white', 'italic'], 'white': ['grey', 'italic']}
+
+    if 'default_dir' in new_config.keys():
+        new_config_file.append(f"default_dir: {new_config['default_dir']}")
+    if 'color_module' in new_config.keys():
+        new_config_file.append(f"color_module: {new_config['color_module']}")
+    if 'other_dir' in new_config.keys():
+        new_config_file.append(f"other_dir:")
+        for item in new_config['other_dir']:
+            new_config_file.append(f"{indent}- {item}")
+    if 'default_files' in new_config.keys() or 'ignore_files' in new_config.keys():
+        new_config_file.append(f"notes:")
+    if 'default_files' in new_config.keys():
+        new_config_file.append(f"{indent}default_files:")
+        for item in new_config['default_files']:
+            new_config_file.append(f"{indent*2}- {item}")
+    if 'ignore_files' in new_config.keys():
+        new_config_file.append(f"{indent}ignore_files:")
+        for item in new_config['ignore_files']:
+            new_config_file.append(f"{indent*2}- {item}")
+    if 'html_cmds' in new_config.keys():
+        new_config_file.append(f"html_cmds:")
+        for cmd, strings in new_config['html_cmds'].items():
+            new_config_file.append(f"{indent}{cmd}:")
+            for string in strings:
+                new_config_file.append(f"{indent*2}- {string}")
+    if 'colors' in new_config.keys():
+        new_config_file.append(f"colors:")
+        for cmd, strings in new_config['colors'].items():
+            new_config_file.append(f"{indent}{cmd}:")
+            for string in strings:
+                new_config_file.append(f"{indent*2}- {string}")
+
+    # new_config_file
+
+    with open(master_rc['rc_file'], 'w') as nycf:
+        nycf.writelines("%s\n" % place for place in new_config_file)
+
+    # with open(master_rc['rc_file'], 'w') as nycf:
+    #         yaml.dump(new_config, nycf, default_flow_style=False)
     exit()
 
 
@@ -255,7 +485,7 @@ def pull_files(directory):
                 dir_lst.append((path,fl))
 
             if os.path.isfile(file_name):
-                # If the file is truly a file, save it 
+                # If the file is truly a file, save it
                 file_lst.append((path,fl))
 
         # Recursive path
@@ -351,7 +581,7 @@ def printit(greplen = 10):
                 file_list.append(ro['file'])
 
 
-    # Finally printing 
+    # Finally printing
     grep_keys = []
 
     # Setting up color setting
@@ -359,7 +589,7 @@ def printit(greplen = 10):
         grep_keys.extend(args.search)
     if args.AND != None:
         grep_keys.extend(args.AND)
-    if args.OR != None:    
+    if args.OR != None:
         grep_keys.extend(args.OR)
 
     for el in print_list:
@@ -405,9 +635,9 @@ def printit(greplen = 10):
 # Markdown tables were complicated so I built something to deal with them better.
 def markdown_table(cont):
     '''
-    Because markdown tables are complicated I have the script run any table it finds through this. 
-    It sets the column width the same. 
-    It is possible it will break if there are multiple rows but I havnt tested it yet and I am just now thinking about it. 
+    Because markdown tables are complicated I have the script run any table it finds through this.
+    It sets the column width the same.
+    It is possible it will break if there are multiple rows but I havnt tested it yet and I am just now thinking about it.
     '''
     table_len = []
     table = []
@@ -442,7 +672,7 @@ def markdown_table(cont):
 def markdown_cmd(cmds):
     new_text = []
     valid_html_cmds = master_rc['html_cmds']
-   
+
     for cmd in cmds.split(','):
         while cmd.startswith(' '):
             cmd = cmd[1:]
@@ -451,12 +681,13 @@ def markdown_cmd(cmds):
         if any([True for valid in valid_html_cmds.keys() if cmd.upper() == valid.upper()]):
             for i,j in valid_html_cmds.items():
                 if cmd.upper() == i.upper():
-                    try:
-                        new_text.append(
-                            SC.__dict__[master_rc['html_cmds'][j]]
-                        )
-                    except KeyError:
-                        pass
+                    for color_update in master_rc['html_cmds'][i]:
+                        try:
+                            new_text.append(
+                                SC.__dict__[color_update]
+                            )
+                        except KeyError:
+                            pass
         else:
             new_text.append('')
     return ''.join(new_text)
@@ -464,7 +695,7 @@ def markdown_cmd(cmds):
 
 def markdown(cont):
     '''
-    This is run every time markdown files are being parsed. 
+    This is run every time markdown files are being parsed.
     So far I have parsed tables, backtick strings and block text (` and ```), Notes (>), page breaks, and ignoring hidden comments.
     There are more markdown elements out there but they did not benefit much by being separated out.
     I will happily update this section if people want additions!
@@ -548,8 +779,8 @@ def markdown(cont):
 
         if re.search(header_s, line):
             # Section headers
-            # Right now I dont have a good way to increase the text size so i just make the section headers stand out. 
-            # Markdown only recognises headers up to the 6th level. 
+            # Right now I dont have a good way to increase the text size so i just make the section headers stand out.
+            # Markdown only recognises headers up to the 6th level.
             line = line.strip()
             head_intensity = len(re.findall('^##*', line)[0])
             line = line.strip('#')
@@ -586,14 +817,14 @@ def markdown(cont):
         if len(re.findall('\|', line)) > 2:
             # Tables
             '''
-            When a table is found, all the rest of the table is pulled and run through the markdown table thing above. 
-            This is achieved by the first line of a table setting the table flag True. 
-            The script itterates through the lines of the rest of the file to pull the reat of the table. 
-            The entier table is run through the markdown table function above. 
-            The table is returned and formatted here. 
-            When the script keeps itterating through elements of the table it ignores them because the table flag is still True. 
-            When the end of the table is reached the table flag is set to False until the next table is found. 
-            This could cause the script to error if the end of the file is part of the table but should be fine if there is even one line of whitespace. 
+            When a table is found, all the rest of the table is pulled and run through the markdown table thing above.
+            This is achieved by the first line of a table setting the table flag True.
+            The script itterates through the lines of the rest of the file to pull the reat of the table.
+            The entier table is run through the markdown table function above.
+            The table is returned and formatted here.
+            When the script keeps itterating through elements of the table it ignores them because the table flag is still True.
+            When the end of the table is reached the table flag is set to False until the next table is found.
+            This could cause the script to error if the end of the file is part of the table but should be fine if there is even one line of whitespace.
             '''
             if table_flag:
                 continue
@@ -688,7 +919,7 @@ if args.search == [] and \
 # If there are list or order specific search elements
 elif args.list != None:
 
-    # Every time an argument is used the file search pool gets reduced. 
+    # Every time an argument is used the file search pool gets reduced.
     guide_files_list = guide_files
     guide_list = []
     initial_readout = []
@@ -710,7 +941,7 @@ elif args.list != None:
             # While still searching through the args.list the folowing occures.
             guide_files_list = []
             initial_readout = []
-            # File lists get reduced and filter results as well. 
+            # File lists get reduced and filter results as well.
 
             for fl in set(guide_list):
                 rebuild = fl.split('/')

@@ -214,6 +214,7 @@ git merge <branch name>
 git merge <source branch> <target branch>
 git stash
 git stash clear
+git rm -- cached <filename>
 ```
 
 | Command | Description |
@@ -233,6 +234,7 @@ git stash clear
 | `git merge <source branch> <target branch>` | Merge a branch into a target branch |
 | `git stash` | Stash changes in a dirty working directory |
 | `git stash clear` | Remove all stashed entries |
+| `git rm -- cached <filename>` | Stop tracking file but dont delete it in remote |
 
 To add a remote branch to your local branch run the following command:
 
