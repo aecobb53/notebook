@@ -1,7 +1,7 @@
 default_dir: /home/acobb/notes/
 color_module: 256
 rc_file: /home/acobb/.notebookrc
-other_dir: 
+# other_dir: 
 
 notes:
     default_files:

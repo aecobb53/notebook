@@ -4,6 +4,7 @@ import re
 import json
 import yaml
 from etc import string_colors
+from etc import conf_manager
 
 
 # Configs
@@ -30,14 +31,41 @@ with open(master_rc_path) as ycf:
 
 
 # User RC
-rc_file.update(master_rc['notes'])
-rc_file.update(master_rc['colors'])
+# print(json.dumps(master_rc, indent=4))
+def update_rc(orig, new):
+    # print(json.dumps(orig, indent=4))
+    # print(json.dumps(new, indent=4))
+    newdct = orig
+    for key, value in new.items():
+        if key not in newdct:
+            newdct[key] = []
+        for val in value:
+            if val.endswith('/n'):
+                for dex, item in enumerate(newdct[key]):
+                    if val[:-2] == item:
+                        newdct[key].remove(item)
+                        break
+            else:
+                newdct[key].append(val)
+    return newdct
+
+# rc_file.update(master_rc['notes'])
+rc_file = update_rc(rc_file, master_rc['notes'])
+rc_file = update_rc(rc_file, master_rc['colors'])
+# rc_file.update(master_rc['colors'])
+print('first')
 print(json.dumps(rc_file, indent=4))
 with open(master_rc['rc_file']) as ycf:
-    ymlfile = yaml.load(ycf, Loader=yaml.FullLoader)
-print(ymlfile)
-print(type(ymlfile))
-rc_file.update(ymlfile)
+    new_rc_updates = yaml.load(ycf, Loader=yaml.FullLoader)
+rc_file = update_rc(rc_file, new_rc_updates['notes'])
+rc_file = update_rc(rc_file, new_rc_updates['colors'])
+# print(ymlfile)
+# print(type(ymlfile))
+# rc_file = conf_manager.update_config(rc_file, ymlfile)
+# for key, value in [
+#     new_rc_updates['']
+# ]
+print('updated')
 print(json.dumps(rc_file, indent=4))
 # try:
 #     with open(master_rc['rc_file']) as ycf:
