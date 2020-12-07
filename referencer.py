@@ -6,6 +6,9 @@ import yaml
 from etc import string_colors
 from etc import conf_manager
 
+"""
+set the env variable NOTEBOOK  to /home/acobb/notebook 
+"""
 
 # Configs
 """
@@ -14,8 +17,10 @@ There are three configs of note
 - etc/default_notebookrc.yml for default rc file details
 - $HOME/.notebookrc for user updated rc file values
 """
-master_config_path = 'etc/referencer.yml'
-master_rc_path = 'etc/default_notebookrc.yml'
+
+main_dir = os.getenv('NOTEBOOK')
+master_config_path = main_dir + '/' + 'etc/referencer.yml'
+master_rc_path = main_dir + '/' + 'etc/default_notebookrc.yml'
 config = {}
 rc_file = {}
 
@@ -27,16 +32,12 @@ config.update(master_config)
 with open(master_rc_path) as ycf:
     master_rc = yaml.load(ycf, Loader=yaml.FullLoader)
 
-# def update_rc(first_config, second_config):
-
 
 # User RC
-# print(json.dumps(master_rc, indent=4))
 def update_rc(orig, new):
-    # print(json.dumps(orig, indent=4))
-    # print(json.dumps(new, indent=4))
     newdct = orig
     for key, value in new.items():
+        print(key, value)
         if key not in newdct:
             newdct[key] = []
         for val in value:
@@ -49,40 +50,37 @@ def update_rc(orig, new):
                 newdct[key].append(val)
     return newdct
 
-# rc_file.update(master_rc['notes'])
-rc_file = update_rc(rc_file, master_rc['notes'])
-rc_file = update_rc(rc_file, master_rc['colors'])
-# rc_file.update(master_rc['colors'])
-print('first')
-print(json.dumps(rc_file, indent=4))
+# Load personal rc file
 with open(master_rc['rc_file']) as ycf:
     new_rc_updates = yaml.load(ycf, Loader=yaml.FullLoader)
-rc_file = update_rc(rc_file, new_rc_updates['notes'])
-rc_file = update_rc(rc_file, new_rc_updates['colors'])
-# print(ymlfile)
-# print(type(ymlfile))
-# rc_file = conf_manager.update_config(rc_file, ymlfile)
-# for key, value in [
-#     new_rc_updates['']
-# ]
-print('updated')
+
+print(json.dumps(master_rc, indent=2))
+print(json.dumps(new_rc_updates, indent=2))
+
+# Update the rc file
+rc_file['color_module'] = master_rc['color_module']
+rc_file = update_rc(rc_file, master_rc['notes'])
+rc_file = update_rc(rc_file, master_rc['colors'])
+try:
+    rc_file = update_rc(rc_file, new_rc_updates['notes'])
+except:
+    pass
+
+try:
+    rc_file = update_rc(rc_file, new_rc_updates['colors'])
+except:
+    pass
+
+try:
+    rc_file['color_module'] = new_rc_updates['color_module']
+except:
+    pass
+
 print(json.dumps(rc_file, indent=4))
-# try:
-#     with open(master_rc['rc_file']) as ycf:
-#         rc_file.update(yaml.load(ycf, Loader=yaml.FullLoader))
-#     # raise ValueError('DONT RUN THIS WHILE DEVELOPING BUT EVENTUALLY DO')
-# except as err:
-#     print('it didnt work')
-#     print(err)
-#     pass
-
-# rc_file.update(master_rc['html_cmds'])
-
-# print(json.dumps(config, indent=4))
-# print(json.dumps(rc_file, indent=4))
 
 # Colors
-exec('SC = string_colors.Bit' + str(master_rc['color_module']) + '()')
+exec('SC = string_colors.Bit' + str(rc_file['color_module']) + '()')
+# exec('SC = string_colors.Bit' + str(master_rc['color_module']) + '()')
 print(SC.clc) # To clear any syntax added before this script runs.
 
 # Set colors here:
@@ -151,7 +149,7 @@ else:
 
 # Config
 if args.config:
-    print('running config\n\n')
+    # print('running config\n\n')
     home = os.getenv('HOME')
     rf_file_path = home + '/' + config['rc_filename']
     new_config = {}
@@ -232,12 +230,21 @@ if args.config:
 
     # print(args.search)
     # print(type(args.search))
+    # print(json.dumps(new_config,indent=2))
 
     try:
-        with open(master_rc['rc_file']) as ycf:
-            new_config.update(yaml.load(ycf, Loader=yaml.FullLoader))
+        with open(rf_file_path) as ycf:
+            old_conf = yaml.load(ycf, Loader=yaml.FullLoader)
+            # new_config.update(yaml.load(ycf, Loader=yaml.FullLoader))
+        for key, value in old_conf.items():
+            if key in ['notes']:
+                for k, v in value.items():
+                    new_config.update({k:v})
+            else:
+                new_config.update({key: value})
     except:
         pass
+
 
     # deletename = 'colors'
     # if deletename in new_config.keys():
@@ -287,7 +294,6 @@ if args.config:
             value = int(value)
         except:
             pass
-    
         new_config[key].append(value)
 
     def update_colors(category, key, values, validate=None):
@@ -357,15 +363,15 @@ if args.config:
 
     # print(json.dumps(new_config,indent=4))
 
-    new_config = {}
-    new_config['default_dir'] = '/home'
-    new_config['color_module'] = 256
-    new_config['default_files'] = ['.md', '.txt']
-    new_config['ignore_files'] = ['.txt']
-    new_config['other_dir'] = ['/home/acobb/git', '/home']
-    # new_config['other_dir'] = ['/home/acobb/git']
-    new_config['html_cmds'] = {'blue': ['blue']}
-    new_config['colors'] = {'FILE': ['red', 'back_white', 'italic'], 'white': ['grey', 'italic']}
+    # new_config = {}
+    # new_config['default_dir'] = '/home'
+    # new_config['color_module'] = 256
+    # new_config['default_files'] = ['.md', '.txt']
+    # new_config['ignore_files'] = ['.txt']
+    # new_config['other_dir'] = ['/home/acobb/git', '/home']
+    # # new_config['other_dir'] = ['/home/acobb/git']
+    # new_config['html_cmds'] = {'blue': ['blue']}
+    # new_config['colors'] = {'FILE': ['red', 'back_white', 'italic'], 'white': ['grey', 'italic']}
 
     if 'default_dir' in new_config.keys():
         new_config_file.append(f"default_dir: {new_config['default_dir']}")
@@ -400,6 +406,7 @@ if args.config:
 
     # new_config_file
 
+    # print(json.dumps(new_config,indent=2))
     with open(master_rc['rc_file'], 'w') as nycf:
         nycf.writelines("%s\n" % place for place in new_config_file)
 
