@@ -282,5 +282,190 @@ The condition variable has three main operations: `wait`, `signal`, and `broadca
 `broadcast` is what a thread will do to all waiting threads when its done with the resource. 
 broadcast can be used for things like notifying when the queue is empty or not empty. 
 
+Create a condition object to signal after someone has taken soup.
+```python
+import threading
+slowcooker_lid = threading.Lock()
+soup_taken = threading.Condition(Lock=slowcooker_lid)
+```
+The typical pattern is 
+```python
+lock.acquire()
+while not (CONDITION):
+    condition_variable.wait()
+
+    # do something
+
+lock.release()
+```
+Or using a context manager:
+```python
+with lock:
+    while not (CONDITION):
+        condition_variable.wait()
+    # Do something
+```
+To add a notify do something like
+```python
+with lock:
+    while not (CONDITION):
+        condition_variable.wait()
+    # Do something
+    condition_variable.notify()
+```
+You can notify all threads waiting by switching `.notify()` to `.notify_all()`. 
+If you dont care which thread is run next the regular notify works fine. 
+
+---
+
+**Producers** - Produce items for a queue
+
+**Consumers** - Consume items from the queue
+
+**queues**
+
+| abbr | longhand |
+| ---  | --- |
+| FIFO | First-In-First-Out | 
+
+**Pipeline** is the process items from a queue go through as they are processed. 
+
+To create the maximum size of a queue use this
+```python
+import queue
+serving_line = queue.Queue(maximize=5)
+```
+The `queue` module enables producers and consumers to access the queue without interfearing. 
+To add items to the queue use `put_nowait` and to consume use `get`. 
+```python
+serving_line = queue.Queue(maximize=5)
+
+def produce():
+    serving_line.put_nowait('item')
+
+def consume():
+    bowl = serving_line.get()
+
+```
+
+# Multiprocessing
+If the tasks are CPU restricting you can use multiple processors instead of threads. 
+Because of the GIL, only 1 thead may be active at a time on a processor. 
+You can increase the number of processors by using the `multiprocessing` module. 
+You also need to pass the object into the functions for this one. 
+The `maxsize-serving_line` as seen in `serving_line._maxsize-serving_line.qsize())` needs to have an `_` added after the object as seen in the second code block in this sentence. 
+```python
+import myltiprocessing as mp
+
+serving_line = mc.Queue(5)
+
+def soup_producer(serving_line):
+    serving_line.put_nowait('item')
+
+def soup_consumer(serving_line):
+    bowl = serving_line.get()
+
+if __name__ == '__main__':
+    for consumer in range(2):
+        mp.Process(target=soup_consumer, args=(serving_line,)).start()
+    mp.Process(target=soup_producer, args=(serving_line,)).start()
+```
+
+**Semaphore** can be used by multiple threads at the same time. 
+It includes a counter to track availability. 
+If a counter is positive, the counter value is decremented when it is acquired. 
+If the counter is zero the resource will wait until one is avilable. 
+When you release a semaphore the waiting resources are notified. 
+
+**Binary semaphore** is limited to either 1/0 resources. 
+It looks a lot like a mutex. 
+The difference is a mutex can only be released by the same resources that locked it. 
+A semephore can be acquired/released by different threads. 
+These can be used in a buffer. 
+The producer decrements the empty count and increments the fill count. 
+The consumer does the oposit and decrements the fill and increments the empty. 
+This ensure the buffer never overflows or the opposite. 
+
+To set a binary semephore initilize it with `1`. 
+You can also use a context manager. 
+```python
+charger = threading.Semaphore(1)
+with charger:
+    # Do some stuff
+```
+
+# Barrier
+
+**Data race** vs **Race condition**. 
+A data race occures when two or more threads try to access and update the same location in memory at the same time and they interfear. 
+Race condition is a flaw in order or timing in the program that causes improper behavior. 
+Race conditions are sometimes called **Heisenbug**s. 
+They are a software bug that disappears when you try to study it. 
+Sometimes sleep statements are an alright way to get around these. 
+
+A barrier is used to stop a run until all or enough threads have done their thing so you can proceed. 
+The barrior can be used to syncronize events. 
+Think PEMDAS from math, if a barrior is placed between each step, all parenthese math will be completed before the exponent math begins. 
+
+To create a barrior do this. 
+Notice how there are `10` threads that the barrier will wait for until releasing the threads again. 
+You can add the barriers before or after steps but they will all occure at the same time. 
+```python
+fist_bump = threading.Barrier(10)
+
+def barron_shopper():
+    fist_bump.wait()
+    # Stuff after wait
+
+def olivia_shopper():
+    # Stuff before the wait
+    fist_bump.wait()
+```
+
+# Asynchronous tasks
+
+`Spawn` will spawn asynchronous functions while `Sync` will bring them back together again. 
+You will also see `Fork` and `Join` used in the same context. 
+
+DAG = Directed Acyclic Graph. 
+This was the image used in the video to show that the second thread could take one of the async processies while the main thread took the other. 
+
+`Work` indicates the total work done by the program. 
+The `Critical Path` is the path of most work if everything was parallelerized as much as possible. 
+This is important because if work was time the critical path would indicate the shortest amount of time anything could get through because everything would need to wait for the critical path in the end anyway. 
+`Span` is the amount of work in the critical path. 
+The `Ideal Parallelism` ration is the `work`/`sman` and is a positive fraction or float. 
+For example if the Work for a program is 60 and the Span is 45, the Ideal Parallelism is 60/45 or 1.33. 
+This means the the parallelism is 33% faster than running everything in sequential order. 
+
+Because spawning many async threads can get crouded and chaotic you can use `Thread Pool`s. 
+They create and maintain a collection of workers. 
+When a task is submitted the pool will re-use threads when they are available. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
