@@ -5,7 +5,7 @@ import os
 
 # https://libtmux.git-pull.com/api.html
 
-working_directory = os.environ['HOME'] + f'/task_warrior_wrapper/'
+working_directory = os.environ['HOME'] + f'/notebook/'
 
 # Logging
 logit = logging.getLogger('TaskWarrior')

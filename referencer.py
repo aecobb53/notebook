@@ -37,7 +37,7 @@ with open(master_rc_path) as ycf:
 def update_rc(orig, new):
     newdct = orig
     for key, value in new.items():
-        print(key, value)
+        # print(key, value)
         if key not in newdct:
             newdct[key] = []
         for val in value:
@@ -54,8 +54,8 @@ def update_rc(orig, new):
 with open(master_rc['rc_file']) as ycf:
     new_rc_updates = yaml.load(ycf, Loader=yaml.FullLoader)
 
-print(json.dumps(master_rc, indent=2))
-print(json.dumps(new_rc_updates, indent=2))
+# print(json.dumps(master_rc, indent=2))
+# print(json.dumps(new_rc_updates, indent=2))
 
 # Update the rc file
 rc_file['color_module'] = master_rc['color_module']
@@ -76,7 +76,7 @@ try:
 except:
     pass
 
-print(json.dumps(rc_file, indent=4))
+# print(json.dumps(rc_file, indent=4))
 
 # Colors
 exec('SC = string_colors.Bit' + str(rc_file['color_module']) + '()')

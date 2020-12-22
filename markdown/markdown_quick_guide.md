@@ -456,8 +456,12 @@ You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
 [//]: # (You cannot see this)
 
+<!--or this-->
+
 ```md
 [//]: # (You cannot see this)
+
+<!--or this-->
 ```
 
 This is a normal line
