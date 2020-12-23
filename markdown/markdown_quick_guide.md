@@ -243,19 +243,20 @@ There are three types of lists:
 
 2. Listed
 
-   - With indent
+    - With indent
   
 - Regular
 
 - Listed
 
-  - With indent
+    - With indent
 
 - \-
 
 * \*
 
 > Note: Three indent spaces are required for numbered lists, but only two for non-numbered
+
 
 ![indent_example](image_dir/nested-list-alignment.png)
 
@@ -285,6 +286,19 @@ There are three types of lists:
 - [ ] Unchecked
 
 - [x] Checked
+```
+
+The numbered lists will order all numbers in order not in the order see in the markdown. 
+Basickly, if you switch lines around you dont have to update the numbers:
+
+1. one
+3. three
+2. two
+
+```
+1. one
+3. three
+2. two
 ```
 
 [//]: # (What's the difference between an introverted and an extroverted engineer?)
