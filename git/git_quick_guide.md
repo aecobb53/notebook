@@ -210,6 +210,7 @@ git checkout -- <file-name.txt>
 git checkout --track origin/<repo_name>
 git fetch
 git fetch -p origin
+git rebase <branch>
 git merge <branch name>
 git merge <source branch> <target branch>
 git stash
@@ -230,6 +231,7 @@ git rm -- cached <filename>
 | `git checkout --track origin/<repo_name>` | Pull a remote branch that is not in your local repo |
 | `git fetch` | Pulls the most current from remote repo |
 | `git fetch -p origin` | Pulls the most current master from the remote repo |
+| `git rebase < branch name >` | Sync local only branch up with remote master |
 | `git merge <branch name>` | Merge a branch into the active branch |
 | `git merge <source branch> <target branch>` | Merge a branch into a target branch |
 | `git stash` | Stash changes in a dirty working directory |
