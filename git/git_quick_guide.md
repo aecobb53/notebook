@@ -5,21 +5,22 @@ This is a markdown file to help keep track of useful github commands.
 ## Table of contents
 
 - [First Time Setup](#first-time-setup)
-  - [Migrate from URL to SSH keys](#migrate-from-url-to-ssh-keys)
+    - [Migrate from URL to SSH keys](#migrate-from-url-to-ssh-keys)
 - [General Use](#general-use)
-- [Commands](#commands)
-  - [Branch Setup](#branch-setup)
-  - [Commits n Pushes](#commits-n-pushes)
-  - [Branch Management](#branch-management)
-  - [Push n Pull](#push-n-pull)
-  - [Others](#others)
-  - [Resets](#resets)
-  - [Web Resources](#web-resources)
+    - [Bread and Butter Commands](#bread-and-butter-commands)
+    - [Branch Setup](#branch-setup)
+    - [Branch Management](#branch-management)
+    - [Commits](#commits)
+    - [Push n Pull](#push-n-pull)
+    - [Others](#others)
+- [Resets](#resets)
+    - [Web Resources](#web-resources)
 - [Revert Branch Walkthrough](#revert-branch-walkthrough)
-  - [Pushed to wrong branch](#pushed-to-wrong-branch)
-  - [Copy specific files from another branch](#copy-specific-files-from-another-branch)
-  - [Update remote to another branch](#update-remote-to-another-branch)
+    - [Pushed to wrong branch](#pushed-to-wrong-branch)
+    - [Copy specific files from another branch](#copy-specific-files-from-another-branch)
+    - [Update remote to another branch](#update-remote-to-another-branch)
 - [Config](#config)
+- [Web resources](#web-resources)
 
 ## First Time Setup
 
@@ -36,31 +37,22 @@ You can find the url requested below by going to the main repo page.
 On the right there is a green button `Clone or download`. 
 After clicking on the green button, copy the url. 
 
-> DG url structure `https://github.digitalglobe.com/<platform>/<repo_name>.git`
+> Enterprise url structure `https://<enterprise>/<platform>/<repo_name>.git`
 
-```tcsh
-git config --global credential.helper 'cache --timeout=86400'
-git init
-git clone <url from remote repo>
-```
+If you are creating a repo from a directory run `git init`. 
+If you are cloaning a repo from remote use `git clone <ssh or html url>`. 
 
-| Command | Description |
-| ------- | ----------- |
-| `git config --global credential.helper 'cache --timeout=86400'` | set up your password timeout to 24hrs from 0 |
-| `git init` | Initialize a local Git repository |
-| `git clone <url from remote repo>` | Create a local copy of a remote repository |
+### Migrate from username/password to SSH keys
 
-### Migrate from URL to SSH keys
-
-By default github is set up to use URLs to push commits to the remote branch. 
-I find using ssh keys to authenticate to be much easier than the URL. 
-Another reason to switch are the issues with the two factor authentication. 
-Each account needs to have ssh keys, and your local branches need to have the url updated. 
+If you happen to still be using username/password I highly reccomend changing to ssh. 
+Each account needs to save ssh keys, and your local branches need to have the url updated. 
+When you copy in your ssh keys make sure you only copy the public key. 
 
 #### Updating your account
 
-- Copies the contents of the id_rsa.pub file to your clipboard `~/.ssh/id_rsa.pub`. 
-  This is your public key so its fine if people see it. 
+- Copy the contents of the id_rsa.pub file to your clipboard `~/.ssh/id_rsa.pub`. 
+    This is your public key so its fine if people see it. 
+    If you are lazy you can try this cmd `xclip -sel clip < ~/.ssh/id_rsa.pub`. 
 
 - Go to Settings
 
@@ -86,14 +78,14 @@ Each account needs to have ssh keys, and your local branches need to have the ur
 
 > If you have questions follow this link: https://help.github.com/en/enterprise/2.18/user/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account
 
-#### Updating your local branch
+#### Updating your local repo
 
 You can check to see if you are set up for URL pushes by running `git remote -v`:
 
 ```
 git remote -v
-origin  https://github.digitalglobe.com/p20-20-mcs/MCS-toolbox.git (fetch)
-origin  https://github.digitalglobe.com/p20-20-mcs/MCS-toolbox.git (push)
+origin  https://github.<enterprise>.com/<platform>/<repo_name>.git (fetch)
+origin  https://github.<enterprise>.com/<platform>/<repo_name>.git (push)
 ```
 
 Set the new url:
@@ -113,136 +105,93 @@ Verify that they are now set correctly:
 
 ```
 git remote -v
-origin  git@github.digitalglobe.com:p20-20-mcs/MCS-toolbox.git (fetch)
-origin  git@github.digitalglobe.com:p20-20-mcs/MCS-toolbox.git (push)
+origin  git@github.<enterprise>.com:<platform>/<repo_name>.git (fetch)
+origin  git@github.<enterprise>.com:<platform>/<repo_name>.git (push)
 ```
 
 ---
 
 ## General Use
 
-### Commands
+### Bread and Butter Commands
 
 Of all the commands in this file, the following are most likely to be the most useful. 
-Memorizing the following list would be worthwile. 
 The commands are somewhat oriented with most often used on top to least often on bottom. 
 
-| Command | Description | Reason it is useful |
-| --- | --- | --- |
-| `git commit` | Commit changes | Small updates to a script can be saved |
-| `git push` | Push changes to remote repository (remembered branch) | Save to the remote |
-| `git status` | Check status | Check for mismatches between local and remote before pushes |
-| `git add <file_name>` | Add a file to the staging area | Add files to save to git |
-| `git branch` | List branches (the asterisk denotes the current branch) | Verify you are on the branch you thought, or see other branches |
-| `git checkout -b <branch name>` | Create a new branch and switch to it | Create a new feature branch |
-| `git pull origin <branch name>` | Pull changes from remote repository | Updates your local repo if the remote changed |
+| Command | Description |
+| --- | --- |
+| `git commit`                      | Stage updates and give them a description.                                            |
+| `git push`                        | Push updates to the remote repo.                                                      |
+| `git status`                      | See what is and isnt statged.                                                         |
+| `git add <file_name>`             | Add a file to the next commit (`git add .` adds everything in that directory down).   |
+| `git branch`                      | Lists active branches in your local repo.                                             |
+| `git pull`                        | Pull the remote branch changes.                                                       |
+| `git checkout -b <branch name>`   | Creates a new branch and checks it out.                                               |
 
 ---
 
 ### Branch Setup
 
-Use this to set your local host to a remote repo. 
+Use this to create a local copy of a remote repo. 
 You can find the url requested below by going to the main repo page. 
 On the right there is a green button `Clone or download`. 
 After clicking on the green button, copy the url. 
 
-> DG url structure `https://github.digitalglobe.com/<platform>/<repo_name>.git`
-
-```tcsh
-git clone <url from remote repo>
-```
+> Enterprise url structure `https://github.<enterprise>.com/<platform>/<repo_name>.git`
 
 | Command | Description |
-| ------- | ----------- |
-| `git clone <url from remote repo>` | Create a local copy of a remote repository |
-
-To add a remote branch to your local branch run the following command:
-
-```tcsh
-git checkout --track origin/<branch name>
-```
-
----
-
-### Commits n Pushes
-
-The git remove function is not needed if you remove the file/directory and commit. 
-If you do not like to use the command line. 
-You can run `git commit` and then type your mesage and save the file. 
-
-```tcsh
-git status
-git add <file_name>
-git add .
-git add -A
-git commit
-git commit -m "<commit message>"
-git commit --amend
-git rm -r <file-name.txt>
-```
-
-| Command | Description |
-| ------- | ----------- |
-| `git status` | Check general status and status of local vs remote |
-| `git add <file_name>` | Add a file to the staging area |
-| `git add .` | Add all new and changed files to the staging area |
-| `git add -A` | Add all new and changed files to the staging area |
-| `git commit ` | Commit changes, will prompt for message in a *vi* text editer |
-| `git commit -m "<commit message>"` | Commit changes |
-| `git commit --amend` | Appends the previous commit |
-| `git rm -r <file-name.txt>` | Remove a file/directory |
+| --- | --- |
+| `git clone <url from remote repo>`                                | Create a local copy of a remote repository.   |
+| `git checkout -b <new_branch_name> origin/<remote_branch_name>`   | To create a local copy of a remote branch.    |
 
 ---
 
 ### Branch Management
 
-The folowing commands are useful for branch management
+| Command | Description |
+| --- | --- |
+| `git branch`                                          | List branches (the asterisk denotes the current branch)   |
+| `git branch <branch name>`                            | Create a new branch                                       |
+| `git branch -d <branch name>`                         | Delete a branch                                           |
+| `git branch -D <branch name>`                         | Delete a branch that has un pushed commits                |
+| `git checkout <branch name>`                          | Switch to a branch                                        |
+| `git checkout -b <branch name>`                       | Create a new branch and switch to it                      |
+| `git checkout -b <branch name> origin/<branch name>`  | Clone a remote branch and switch to it                    |
+| `git checkout -`                                      | Switch to the branch last checked out                     |
+| `git checkout --track origin/<repo_name>`             | Pull a remote branch that is not in your local repo       |
+| `git fetch`                                           | Pulls the most current from remote repo                   |
+| `git rebase <branchname>`                             | Sync _local only_ branch up with remote master            |
+| `git merge <branch name>`                             | Merge a branch into the active branch                     |
+| `git merge <source branch> <target branch>`           | Merge a branch into a target branch                       |
+| `git stash`                                           | Stash changes in a dirty working directory                |
+| `git stash clear`                                     | Remove all stashed entries                                |
+| `git rm -- cached <filename>`                         | Stop tracking file but dont delete it in remote           |
 
-```tcsh
-git branch
-git branch <branch name>
-git branch -d <branch name>
-git checkout -b <branch name>
-git checkout -b <branch name> origin/<branch name>
-git checkout <branch name>
-git checkout -
-git checkout -- <file-name.txt>
-git checkout --track origin/<repo_name>
+To update a single file to what remote has use this:
+```bash
 git fetch
-git fetch -p origin
-git rebase <branch>
-git merge <branch name>
-git merge <source branch> <target branch>
-git stash
-git stash clear
-git rm -- cached <filename>
+git checkout origin/<branch> <file_path>
 ```
+
+---
+
+### Commits
+
+Commit to stage an upodate and title the stage. 
+Once you have staged sufficient commits you can push them to the remote repo. 
+If the branch has not been added to the remote repo, git will prompt you to update remote. 
+To add untracked files you need to use `git add`. 
 
 | Command | Description |
-| ------- | ----------- |
-| `git branch` | List branches (the asterisk denotes the current branch) |
-| `git branch <branch name>` | Create a new branch |
-| `git branch -d <branch name>` | Delete a branch |
-| `git checkout -b <branch name>` | Create a new branch and switch to it |
-| `git checkout -b <branch name> origin/<branch name>` | Clone a remote branch and switch to it |
-| `git checkout <branch name>` | Switch to a branch |
-| `git checkout -` | Switch to the branch last checked out |
-| `git checkout -- <file-name.txt>` | Discard changes to a file |
-| `git checkout --track origin/<repo_name>` | Pull a remote branch that is not in your local repo |
-| `git fetch` | Pulls the most current from remote repo |
-| `git fetch -p origin` | Pulls the most current master from the remote repo |
-| `git rebase < branch name >` | Sync local only branch up with remote master |
-| `git merge <branch name>` | Merge a branch into the active branch |
-| `git merge <source branch> <target branch>` | Merge a branch into a target branch |
-| `git stash` | Stash changes in a dirty working directory |
-| `git stash clear` | Remove all stashed entries |
-| `git rm -- cached <filename>` | Stop tracking file but dont delete it in remote |
-
-To add a remote branch to your local branch run the following command:
-
-```tcsh
-git checkout --track origin/<branch name>
-```
+| --- | --- |
+| `git add <file_name>`                 | Add a specific file or list to the next commit.                   |
+| `git add .`                           | Add all new and changed files to the next commit.                 |
+| `git add -A`                          | Add all new and changed files to the next commit.                 |
+| `git commit -a`                       | Commit changes, will prompt for message in a _vi_ text editer.    |
+| `git commit -m "<commit message>"`    | Commit changes.                                                   |
+| `git commit --amend`                  | Appends the previous commit.                                      |
+| `git rm --cached <file>`              | Tel git to stop tracking a file but dont delete the file.         |
+| `git rm -r -cached <directory>`       | Tel git to stop tracking a direcotry                              |
 
 ---
 
@@ -251,25 +200,11 @@ git checkout --track origin/<branch name>
 Pushes are used to push to the remote. 
 Pulls are used to pull from the remote to local or one branch to another.
 
-```tcsh
-git push
-git push origin <branch name>
-git push -u origin <branch name>
-git push origin --delete <branch name>
-git push --set-upstream origin <new_branch_name>
-git pull
-git pull origin <branch name>
-```
-
 | Command | Description |
-| ------- | ----------- |
-| `git push` | Push changes to remote repository (remembered branch) |
-| `git push origin [branch name]` | Push a branch to your remote repository |
-| `git push -u origin [branch name]` | Push changes to remote repository (and remember the branch) |
-| `git push origin --delete [branch name]` | Delete a remote branch |
-| `git push --set-upstream origin <new_branch_name>` | Push local branch to the remote if it does not exist yet |
-| `git pull` | Update local repository to the newest commit |
-| `git pull origin [branch name]` | Pull changes from remote repository |
+| --- | --- |
+| `git push`                                            | Push changes to remote repo. |
+| `git push --set-upstream origin <new_branch_name>`    | Push local branch to the remote if it does not exist yet |
+| `git pull`                                            | Update local repository to the remote |
 
 ---
 
@@ -284,6 +219,8 @@ git pull origin <branch name>
 ---
 
 ## Resets
+
+**I dont keep this completely up to date because I dont use these commands very often.**
 
 #### Revert a push/commit
 
@@ -462,22 +399,13 @@ The default looks something like this:
 Further categories can be added by following this link: 
 https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration
 
-Config commands
-```tcsh
-git config --global credential.helper cache
-git config --global credential.helper 'cache --timeout=86400'
-git config --global core.editor <default code editor>
-git config --list
-git config --unset-all
-```
-
 | Command | Description |
-| ------- | ----------- |
-| `git config --global credential.helper cache` | set up your git config file |
-| `git config --global credential.helper 'cache --timeout=86400'` | set up your password timeout to 24hrs from 0 |
-| `git config --global core.editor <default code editor>` | Change the default editor from `vi` |
-| `git config --list` | Lists out the contents of a users config file |
-| `git config --unset-all` | I believe this unsets the config, but I have not tried it to confirm |
+| --- | --- |
+| `git config --global credential.helper cache`                     | set up your git config file                                           |
+| `git config --global credential.helper 'cache --timeout=86400'`   | set up your password timeout to 24hrs from 0                          |
+| `git config --global core.editor <default code editor>`           | Change the default editor from `vi`                                   |
+| `git config --list`                                               | Lists out the contents of a users config file                         |
+| `git config --unset-all`                                          | I believe this unsets the config, but I have not tried it to confirm  |
 
 ---
 
