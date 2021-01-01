@@ -191,7 +191,7 @@ To add untracked files you need to use `git add`.
 | `git commit -m "<commit message>"`    | Commit changes.                                                   |
 | `git commit --amend`                  | Appends the previous commit.                                      |
 | `git rm --cached <file>`              | Tel git to stop tracking a file but dont delete the file.         |
-| `git rm -r -cached <directory>`       | Tel git to stop tracking a direcotry                              |
+| `git rm -r --cached <directory>`       | Tel git to stop tracking a direcotry                              |
 
 ---
 
