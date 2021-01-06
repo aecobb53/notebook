@@ -7,7 +7,7 @@ from etc import string_colors
 from etc import conf_manager
 
 """
-set the env variable NOTEBOOK  to /home/acobb/notebook 
+set the env variable NOTEBOOK to wherever the notebook repo is
 """
 
 # Configs
@@ -28,7 +28,7 @@ rc_file = {}
 with open(master_config_path) as ycf:
     master_config = yaml.load(ycf, Loader=yaml.FullLoader)
 config.update(master_config)
-# Default RC
+# Default rc
 with open(master_rc_path) as ycf:
     master_rc = yaml.load(ycf, Loader=yaml.FullLoader)
 
@@ -54,8 +54,14 @@ def update_rc(orig, new):
 with open(master_rc['rc_file']) as ycf:
     new_rc_updates = yaml.load(ycf, Loader=yaml.FullLoader)
 
+
+# print("\n\n  Master config")
+# print(json.dumps(config, indent=2))
+# print("\n\n  Master RC")
 # print(json.dumps(master_rc, indent=2))
+# print("\n\n  new RC from user")
 # print(json.dumps(new_rc_updates, indent=2))
+
 
 # Update the rc file
 rc_file['color_module'] = master_rc['color_module']
@@ -76,6 +82,13 @@ try:
 except:
     pass
 
+if 'default_dir' in new_rc_updates.keys():
+    master_rc['default_dir'] = new_rc_updates['default_dir']
+
+if 'other_dir' in new_rc_updates.keys():
+    master_rc['other_dir'] = new_rc_updates['other_dir']
+
+# print("\n\n  RC for run")
 # print(json.dumps(rc_file, indent=4))
 
 # Colors
@@ -142,9 +155,11 @@ if args.directory == None and args.extended == None:
     directory = [master_rc['default_dir']]
 else:
     if args.extended:
-        directory = args.extended + [rc_file['default_dir']]
+        directory = args.extended + [master_rc['default_dir']]
     else:
         directory = args.directory
+if 'other_dir' in master_rc.keys():
+    directory.extend(master_rc['other_dir'])
 
 
 # Config
@@ -197,7 +212,7 @@ if args.config:
 
         print(one + 'other_dir:')
         print(two + 'other directory adds to the list of default directories used. Remember notes searches recursivly by default.')
-        print(two + 'Example: notes --config default_dir /home/USERNAME/git/notebook')
+        print(two + 'Example: notes --config other_dir /home/USERNAME/git/notebook')
         print('')
 
         # Removing items
@@ -224,6 +239,12 @@ if args.config:
         SC.print_pallet()
 
     if not isinstance(args.search, list) or len(args.search) < 2:
+        try:
+            print('your current notebookrf config')
+            print(json.dumps(new_rc_updates,indent=4))
+        except:
+            pass
+        print('for help, run    notes --config help')
         print('Not enough arguments to update the config')
         exit()
 
@@ -497,10 +518,13 @@ def pull_files(directory):
     # Return all files from the specefied directory/s.
 
     file_lst = []
-    dir_lst = []
+    # dir_lst = []
 
     for path in directory:
         guide_files = os.listdir(path)
+        dir_lst = []
+        if not path.endswith('/'):
+            path = path + '/'
 
         # Normal path
         for fl in guide_files:
@@ -528,21 +552,22 @@ def pull_files(directory):
           # If the recursive arg is True itterate through the directories until every file has been added
 
             while len(dir_lst) > 0:
-              directory_pop = dir_lst.pop()
+                directory_pop = dir_lst.pop()
 
-              for file_orig_pop in os.listdir('/'.join(directory_pop)):
-                  file_pop = directory_pop[0] + '/' + directory_pop[1] + '/' + file_orig_pop
+                for file_orig_pop in os.listdir('/'.join(directory_pop)):
+                    file_pop = directory_pop[0] + '/' + directory_pop[1] + '/' + file_orig_pop
 
-                  if os.path.isdir(file_pop):
-                      # In the directory if the file is actaully a directory, add it to the list
-                      dir_lst.append((directory_pop[0] + directory_pop[1], file_orig_pop))
+                    if os.path.isdir(file_pop):
+                        # In the directory if the file is actaully a directory, add it to the list
+                        dir_lst.append((directory_pop[0] + directory_pop[1], '/', file_orig_pop))
 
-                  if os.path.isfile(file_pop):
-                      # In the directory if the file is a file, add it to the file list
-                      file_lst.append((directory_pop[0] + directory_pop[1], file_orig_pop))
+                    if os.path.isfile(file_pop):
+                        # In the directory if the file is a file, add it to the file list
+                        file_lst.append((directory_pop[0] + directory_pop[1], file_orig_pop))
 
-    # Skip if its not a markdown file and the nonmarkdown file is false
+    # Skip if its not in the list of acceptid file types
     if not args.nonmarkdown:
+        # return list of tuples where the file neds with any element of the default_files config list
         file_lst = [(path, fl) for path, fl in file_lst if \
             any([True for suf in rc_file['default_files'] if fl.endswith(suf)])]
 
@@ -1040,4 +1065,5 @@ else:
 # At the end of everything the print function is called
 
 printit()
-# print(args)
+print(directory)
+print(args)
