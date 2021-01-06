@@ -173,6 +173,14 @@ git fetch
 git checkout origin/<branch> <file_path>
 ```
 
+If you need to bring a branch up to speed with another like master, use this:
+```bash
+git checkout master
+git pull
+git checkout <branchname>
+git merge master
+```
+
 ---
 
 ### Commits
@@ -215,6 +223,7 @@ Pulls are used to pull from the remote to local or one branch to another.
 | `git log` | View changes |
 | `git log --summary` | View changes (detailed) |
 | `git diff [source branch] [target branch]` | Preview changes before merging |
+| `git diff --name-status [source branch]..[target branch]` | Show file differences between two branches |
 
 ---
 
