@@ -173,7 +173,7 @@ git fetch
 git checkout origin/<branch> <file_path>
 ```
 
-If you need to bring a branch up to speed with another like master, use this:
+If you need to bring a branch up to speed with another like master, use this (update local with master updates):
 ```bash
 git checkout master
 git pull

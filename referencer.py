@@ -51,8 +51,13 @@ def update_rc(orig, new):
     return newdct
 
 # Load personal rc file
-with open(master_rc['rc_file']) as ycf:
-    new_rc_updates = yaml.load(ycf, Loader=yaml.FullLoader)
+try:
+    with open(master_rc['rc_file']) as ycf:
+        new_rc_updates = yaml.load(ycf, Loader=yaml.FullLoader)
+except FileNotFoundError:
+    new_rc_updates = {}
+if new_rc_updates is None:
+    new_rc_updates = {}
 
 
 # print("\n\n  Master config")
