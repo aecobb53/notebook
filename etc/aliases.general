@@ -34,3 +34,4 @@ alias py='$PYPATH'
 #########
 
 alias notes='$PYPATH $NOTEBOOK/referencer.py'
+alias build='./build'
