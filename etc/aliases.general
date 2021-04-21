@@ -19,7 +19,7 @@ alias be='sudo su -'
 # ADVANCED SYSTEM #
 ###################
 
-alias sauce='source ~/.zshrc'
+# alias sauce='source ~/.zshrc'
 alias cdg='cd $GITDIR'
 alias grep='grep --color=auto'
 alias ggrep='grep -G'
