@@ -1,7 +1,6 @@
 ################
 # BASIC SYSTEM #
 ################
-
 alias q='exit'
 alias rm='rm -i'
 alias cp='cp -i'
@@ -13,12 +12,9 @@ alias lsa='ls -larth'
 #alias lsd='ls -larthd'
 alias ssh='ssh -X '
 alias be='sudo su -'
-
-
 ###################
 # ADVANCED SYSTEM #
 ###################
-
 alias cdg='cd $GITDIR'
 alias grep='grep --color=auto'
 alias ggrep='grep -G'
@@ -27,10 +23,8 @@ alias grgrep='grep -GR'
 alias grigrep='grep -GRi'
 alias less='less -R'
 alias py='$PYPATH'
-
 #########
 # TOOLS #
 #########
-
 alias notes='$PYPATH $NOTEBOOK/referencer.py'
 alias build='./build'
