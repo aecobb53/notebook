@@ -109,6 +109,22 @@ origin  git@github.<enterprise>.com:<platform>/<repo_name>.git (fetch)
 origin  git@github.<enterprise>.com:<platform>/<repo_name>.git (push)
 ```
 
+### Upgrading your default editer
+
+There are two main ways to change your default editer to vim. 
+The first way sets it globally for git. 
+
+```bash
+git config --global core.editor "vim"
+```
+
+The second sets it as the default editer for more than just git. 
+
+```bash
+export VISUAL=vim
+export EDITOR="$VISUAL"
+```
+
 ---
 
 ## General Use
