@@ -406,6 +406,18 @@ There are two ways to do it, either cherry pick each commit, or batch cherry pic
   D---E---F---G master
   ```
 
+### Lost permissions to push changes
+
+Its likely a directory is under a different user/group. follow these steps to fix it
+
+```bash
+cd <repo dir>
+
+cd .git/objects
+ls -al
+sudo chown -R <yourname>:<yourgroup> *
+```
+
 ---
 
 ### Config
