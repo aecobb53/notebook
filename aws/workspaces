@@ -1,0 +1,42 @@
+# AWS Workspaces
+
+## General
+
+Workspaces integrate easilly but are a lot of work to set up. They also very durastickly depending on if it is for production or testing. 
+
+Offers end to end security. 
+
+## Applications
+
+WorkSpaces - Desktops
+WorkDocs - Filestorage
+WorkMail - Hosted email
+AppStream 2.0 - Streaming of selected application in a browser
+
+Workspaces are your typicle vertual desktop but are designed to run Windows applications (or linux). AppStream 2.0 is designed to only run a browser app but is specilized to do that. 
+
+> Because WorkSpaces are either pay monthly or hourly they might be tailored to be temporary work stations :shrug:
+
+## AppStream
+
+AppStream has stacks which are the individual instances of something. The fleets are a collection of stacks. 
+
+It might be able to stream an IDE.
+
+## WorkSpaces
+
+WorkSpace bundles are the "hardware" associated with the station. 
+
+Setting up a workspace can take 30-60 minutes. 
+
+Has snapshots.
+
+### Directories
+
+You can have simple, full, or a connected directory strucutre. Most use the full (hosted) directory or connected directories. 
+
+Can create an image from a running workspace (could be very useful as a base image for different groups of people)
+
+It can be hard to package your own applications so take the time required to make sure you do it correctly from Amazon's documentation. 
+
+
