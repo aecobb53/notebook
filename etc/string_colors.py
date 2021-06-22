@@ -554,3 +554,9 @@ class Bit256(StringColors):
                     self.white, 
                     self.back_white
                     )
+
+if __name__ == '__main__':
+    SC = Bit256()
+    SC.color_table()
+    SC.print_pallet()
+    print(f"{SC.bold}{SC.cyan}{SC.back_white}\nString Colors!{SC.clc} some other text")
