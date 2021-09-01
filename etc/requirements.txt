@@ -26,3 +26,9 @@ pytest-pythonpath==0.7
 
 # Database
 # pymongo
+
+beautifulsoup4
+html5lib
+lxml
+
+
