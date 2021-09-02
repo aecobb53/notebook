@@ -12,10 +12,12 @@ alias lsa='ls -larth'
 #alias lsd='ls -larthd'
 alias ssh='ssh -X '
 alias be='sudo su -'
+
 ###################
 # ADVANCED SYSTEM #
 ###################
 alias cdg='cd $GITDIR'
+alias cdn='cd $NOTEBOOK'
 alias grep='grep --color=auto'
 alias ggrep='grep -G'
 alias rgrep='grep -R'
@@ -23,6 +25,7 @@ alias grgrep='grep -GR'
 alias grigrep='grep -GRi'
 alias less='less -R'
 alias py='$PYPATH'
+
 #########
 # TOOLS #
 #########

@@ -1,0 +1,5 @@
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+cdl() { cd ${1}; lsr ; }
+
