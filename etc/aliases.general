@@ -7,15 +7,16 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias ~='cd ~'
 alias ..='cd ..'
+alias ...='cdl ..'
 alias lsr='ls -lrth'
 alias lsa='ls -larth'
-#alias lsd='ls -larthd'
 alias ssh='ssh -X '
 alias be='sudo su -'
 
 ###################
 # ADVANCED SYSTEM #
 ###################
+alias ls='ls --color=auto'
 alias cdg='cd $GITDIR'
 alias cdn='cd $NOTEBOOK'
 alias grep='grep --color=auto'

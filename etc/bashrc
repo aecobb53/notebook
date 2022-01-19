@@ -1,5 +1,50 @@
+# #####################
+# # Minimum ~/.bashrc #
+# #####################
+# export GITDIR=${HOME}/git
+# export NOTEBOOK=${GITDIR}/notebook
+# export IS_<system>=true
+
+# source ${NOTEBOOK}/etc/bashrc
+
+# # Source global definitions
+# if [ -f /etc/bashrc ]; then
+# 	. /etc/bashrc
+# fi
+#
+
+source ${NOTEBOOK}/etc/aliases.general
+###########
+# Set env #
+###########
+export NOTES=${NOTEBOOK}/notes
+
+# Python
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONUNBUFFERED=1
+export PYPATH='python3' # move to a function or use pyenv or something
+
+# Vim
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
+
+#############
+# Functions #
+#############
 cdl() { cd ${1}; lsr ; }
 
+findg() {
+  FINDCMD="find . -iname '${1}' -exec grep ${3} '${2}' {} \\;"
+  echo $FINDCMD
+  if [ ! -z ${1} ] && [ ! -z ${2} ]; then
+    bash -c $FINDCMD
+  fi
+}
+
+################
+# Bash toolbox #
+################
+for f in $(find ${NOTEBOOK}/shell/zsh_toolbox -name '*.zsh'); do
+  source $f
+done

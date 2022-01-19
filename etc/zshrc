@@ -76,32 +76,55 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
 
-# export MANPATH="/usr/local/man:$MANPATH"
+# ####################
+# # Minimum ~/.zshrc #
+# ####################
+# export GITDIR=${HOME}/git
+# export NOTEBOOK=${GITDIR}/notebook
+# export IS_<system>=true
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+# source ${NOTEBOOK}/etc/bashrc
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
+# # Source global definitions
+# if [ -f /etc/bashrc ]; then
+# 	. /etc/bashrc
 # fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
 #
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+
 
 source ${NOTEBOOK}/etc/aliases.general
-source ${NOTEBOOK}/etc/aliases.zsh
+###########
+# Set env #
+###########
+export NOTES=${NOTEBOOK}/notes
+
+# Python
+export PYTHONDONTWRITEBYTECODE=1
+export PYTHONUNBUFFERED=1
+export PYPATH='python3' # move to a function or use pyenv or something
+
+# Vim
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+
+#############
+# Functions #
+#############
 cdl() { cd ${1}; lsr ; }
+
+findg() {
+  FINDCMD="find . -iname '${1}' -exec grep ${3} '${2}' {} \\;"
+  echo $FINDCMD
+  if [ ! -z ${1} ] && [ ! -z ${2} ]; then
+    bash -c $FINDCMD
+  fi
+}
+
+###############
+# ZSH toolbox #
+###############
+for f in $(find ${NOTEBOOK}/shell/bash_toolbox -name '*.zsh'); do
+  source $f
+done
