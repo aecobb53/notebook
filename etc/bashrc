@@ -45,6 +45,6 @@ findg() {
 ################
 # Bash toolbox #
 ################
-for f in $(find ${NOTEBOOK}/shell/zsh_toolbox -name '*.zsh'); do
+for f in $(find ${NOTEBOOK}/shell/bash_toolbox -name '*.sh'); do
   source $f
 done
