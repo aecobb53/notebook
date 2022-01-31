@@ -14,6 +14,7 @@
 #
 
 source ${NOTEBOOK}/etc/aliases.general
+source ${NOTEBOOK}/etc/aliases.bash
 ###########
 # Set env #
 ###########
@@ -28,6 +29,15 @@ export PYPATH='python3' # move to a function or use pyenv or something
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
+# Jockey
+export JOCKEY=${GITDIR}/jockey
+export PROMPT_COMMAND=${GITDIR}/jockey/main.sh
+source ${JOCKEY}/common_alias.sh
+
+# for f in $(find ${JOCKEY}/modules/bash -name '*.sh'); do
+# echo $f
+#   source $f
+# done
 
 #############
 # Functions #

@@ -40,6 +40,7 @@ class Deconstructor2000:
             print(json.dumps(obj, indent=self.indent))
             return json.dumps(obj, indent=self.indent)
         elif args.python:
+            # print(json.dumps(obj, indent=self.indent))
             return obj
         elif args.ruby:
             str_obj = json.dumps(obj)
