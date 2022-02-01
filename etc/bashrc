@@ -23,7 +23,8 @@ export NOTES=${NOTEBOOK}/notes
 # Python
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONUNBUFFERED=1
-export PYPATH='python3' # move to a function or use pyenv or something
+# export PYPATH='python3' # move to a function or use pyenv or something
+export PYPATH='python' # move to a function or use pyenv or something
 
 # Vim
 export VISUAL=vim
@@ -31,13 +32,24 @@ export EDITOR="$VISUAL"
 
 # Jockey
 export JOCKEY=${GITDIR}/jockey
-export PROMPT_COMMAND=${GITDIR}/jockey/main.sh
+# export PROMPT_COMMAND=${GITDIR}/jockey/main.sh
+export PROMPT_COMMAND=${GITDIR}/jockey/cmd_banner.sh
 source ${JOCKEY}/common_alias.sh
 
 # for f in $(find ${JOCKEY}/modules/bash -name '*.sh'); do
 # echo $f
 #   source $f
 # done
+
+#########
+# Pyenv #
+#########
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init --path)"
+fi
 
 #############
 # Functions #
