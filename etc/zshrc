@@ -94,6 +94,7 @@ source $ZSH/oh-my-zsh.sh
 
 
 source ${NOTEBOOK}/etc/aliases.general
+source ${NOTEBOOK}/etc/aliases.zsh
 ###########
 # Set env #
 ###########
