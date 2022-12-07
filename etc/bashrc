@@ -35,6 +35,11 @@ export JOCKEY=${GITDIR}/jockey
 export PROMPT_COMMAND=${GITDIR}/jockey/cmd_banner.sh
 source ${JOCKEY}/common_alias.sh
 
+# Go
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin
+
 # for f in $(find ${JOCKEY}/modules/bash -name '*.sh'); do
 # echo $f
 #   source $f
