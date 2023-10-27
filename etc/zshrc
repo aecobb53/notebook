@@ -111,6 +111,7 @@ export EDITOR="$VISUAL"
 
 # Jockey
 export JOCKEY=${GITDIR}/jockey
+export JOCKEY_PYTHON_VERSION=3.11.4
 export PROMPT_COMMAND=${GITDIR}/jockey/cmd_banner.sh
 source ${JOCKEY}/common_alias.sh
 

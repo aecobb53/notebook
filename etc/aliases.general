@@ -10,7 +10,7 @@ alias ..='cd ..'
 alias ...='cdl ..'
 alias lsr='ls -lrth'
 alias lsa='ls -larth'
-alias ssh='ssh -X '
+# alias ssh='ssh -X '
 alias be='sudo su -'
 
 ###################
