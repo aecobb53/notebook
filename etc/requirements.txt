@@ -1,38 +1,34 @@
-# Functionality
-python-dotenv==0.18
-tasklib==2.3
-requests==2.25
-pyyaml==5.3
-
-# Daemon
-aiofiles==0.7
-uvicorn==0.12
-fastapi==0.61
-gunicorn==20.0
-jinja2==2.11
-pydantic==1.8
-python-multipart==0.0.5
-
-# Testing
-behave==1.2
-coverage==5.3
-pycodestyle==2.6
-pytest==6.1
-pytest-cov==2.10
-pytest-flakes==4.0
-pytest-mock==3.3
-pytest-pep8==1.0
-pytest-pythonpath==0.7
-
-# Database
-# pymongo
-
+GeoAlchemy2
+Pillow
 beautifulsoup4
+behave
+coverage
+fastapi
 html5lib
 lxml
+numpy
+pycodestyle
+pydantic
+pyperclip
+pytest
+pyyaml
+requests
+shapely
+sqlalchemy
+sqlalchemy-starter
+tasklib
+uvicorn
+websockets
 
 # ipython
 numpy
 matplotlib
 
+# pytest-cov
+# pytest-flakes
+# pytest-mock
+# pytest-pep8
+# pytest-pythonpath
+# python-dotenv
+# python-multipart
 
