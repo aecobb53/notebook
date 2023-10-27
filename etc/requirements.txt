@@ -31,4 +31,8 @@ beautifulsoup4
 html5lib
 lxml
 
+# ipython
+numpy
+matplotlib
+
 
